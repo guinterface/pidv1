@@ -11,12 +11,12 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:pidv1/Classes/Avalia%C3%A7%C3%A3o.dart';
 import 'package:pidv1/Classes/Medicine.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:charts_flutter_new/flutter.dart' as charts;
 
 class SubscriberChart extends StatelessWidget {
   final List<CaloricSeries> data;
+
 
   SubscriberChart({required this.data});
 
@@ -45,7 +45,21 @@ class SubscriberChart extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               Expanded(
-                child: charts.BarChart(series, animate: true),
+                child: charts.BarChart(series, animate: true,
+
+                  domainAxis: charts.OrdinalAxisSpec(
+                    renderSpec: charts.SmallTickRendererSpec(
+                      labelStyle: charts.TextStyleSpec(
+                        lineHeight: 3,
+                        fontSize: 5,
+                        fontWeight: "Bold"
+
+
+                      ),
+
+                    ),
+                  ),
+                ),
               )
             ],
           ),
@@ -835,91 +849,26 @@ class _ChercherFoodsState extends State<ChercherFoods> {
   ];
 
   String _data = "";
+  String _textoConsulta = "";
 
   Future<StreamController<QuerySnapshot>?> _adicionarListenerRequisicoes()async{
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseFirestore db = FirebaseFirestore.instance;
-    User usuarioLogado = await auth.currentUser!;
-    String _idUsuarioLogado;
+
+    print("filtrando");
+    _textoConsulta = _textoPesquisa.capitalizeFirst!;
+
     final stream = db.collection("Comidas")
-        .where("titulo", isGreaterThanOrEqualTo: _textoPesquisa)
+        .where("titulo", isGreaterThanOrEqualTo: _textoConsulta)
         .snapshots();
     stream.listen((dados){_controler.add(dados);});
-    _idUsuarioLogado = usuarioLogado.uid;
-
-    DocumentSnapshot snapshot = await db.collection("usuarios")
-        .doc( _idUsuarioLogado )
-        .get();
-    int _subsCalorias = _calorias;
-    Map<String, dynamic>? dado = snapshot.data() as Map<String, dynamic>?;
-    setState(() {
-      _calorias = dado!["calorias"];
-      _dataUsuario = dado!["data"];
-
-
-    });
-    List<dynamic> Listacalorias = dado!["listaCalorias"];
-    List<dynamic> Listadata = dado!["listaData"];
-    setState(() {
-      _calorias = Listacalorias[0];
-    });
-    if(Listadata.isNotEmpty){
-      for(int i = 0; i<Listadata.length; i++){
-
-          listaGrafico.add(CaloricSeries(
-            day: Listadata[i],
-            calories: Listacalorias[i],
-            barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-          ));
-
-      }
-
-    }
-
-
-      _data = DateTime.now().toString();
-      initializeDateFormatting("pt_BR",null);
-      var formatador = DateFormat("d/MM/y");
-      DateTime dataConvertida = DateTime.parse(_data);
-      String dataormada = formatador.format(dataConvertida);
-      _data = dataormada;
-
-    if(_data!=_dataUsuario){
-      if(listaGrafico.length>=10){
-        Listadata.remove(Listadata[0]);
-        Listacalorias.remove(Listacalorias[0]);
-
-      }
-      Listadata.add(_data);
-      Listacalorias.add(_subsCalorias);
-      Map<String, dynamic> dadosAtualizar = {
-        "data" : _data,
-        "calorias": 0,
-        "listaData": Listadata,
-        "listaCalorias": Listacalorias
-
-      };
-      db.collection("usuarios")
-          .doc(_idUsuarioLogado)
-          .update( dadosAtualizar );
-      snapshot = await db.collection("usuarios")
-          .doc( _idUsuarioLogado )
-          .get();
-
-      Map<String, dynamic>? dados = snapshot.data() as Map<String, dynamic>?;
-      setState(() {
-        _calorias = 0;
-        _dataUsuario = _data;
-
-
-      });
-
-    }else{
-      setState(() {
-
-      });
-    }
+    User usuarioLogado = await auth.currentUser!;
+    String _idUsuarioLogado;
   }
+
+   List<dynamic> _listaCalorias = [];
+  List<dynamic> _listaData = [];
+
   _recuperarDadosUsuario() async {
      String _idUsuarioLogado;
     FirebaseAuth auth = FirebaseAuth.instance;
@@ -932,8 +881,90 @@ class _ChercherFoodsState extends State<ChercherFoods> {
         .get();
 
     Map<String, dynamic>? dados = snapshot.data() as Map<String, dynamic>?;
-    _calorias = dados!["calorias"];
+      setState(() {
+        _calorias = dados!["calorias"];
+        _listaCalorias = dados!["listaCalorias"];
+        _listaData = dados!["listaData"];
+        _idUsuarioLogado = usuarioLogado.uid;
+        _dataUsuario = dados!["data"];
+        print(dados!["nome"]);
+        print(dados["data"]);
 
+      });
+      print("ACHAMOS A DATA");
+      print(_dataUsuario);
+
+
+
+     int _subsCalorias = _calorias;
+     Map<String, dynamic>? dado = snapshot.data() as Map<String, dynamic>?;
+
+     print("Adicionando Listas");
+     _listaCalorias = dado!["listaCalorias"];
+     _listaData = dado!["listaData"];
+     //O PROBLEMA
+     /*setState(() {
+
+      if(Listacalorias[0] != null)
+      _calorias = Listacalorias[0];
+    });*/
+     if(_listaData.isNotEmpty){
+       for(int i = 0; i<_listaData.length; i++){
+
+         listaGrafico.add(CaloricSeries(
+           day: _listaData[i],
+           calories: _listaCalorias[i],
+           barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+         ));
+
+       }
+
+     }
+     _data = DateTime.now().toString();
+     initializeDateFormatting("pt_BR",null);
+     var formatador = DateFormat("d/MM/yy");
+     DateTime dataConvertida = DateTime.parse(_data);
+     String dataormada = formatador.format(dataConvertida);
+     _data = dataormada;
+     print("TESTE 1");
+     print(_data);
+     print(_dataUsuario);
+     if(_data!=_dataUsuario){
+       if(listaGrafico.length>=5){
+         _listaData.remove(_listaData[0]);
+         _listaCalorias.remove(_listaCalorias[0]);
+
+       }
+
+       _listaData.add(_data);
+       _listaCalorias.add(0);
+       setState(() {
+         _calorias = 0;
+         _dataUsuario = _data;
+
+
+       });
+       Map<String, dynamic> dadosAtualizar = {
+         "data" : _data,
+         "calorias": 0,
+         "listaData": _listaData,
+         "listaCalorias": _listaCalorias
+
+       };
+       db.collection("usuarios")
+           .doc(_idUsuarioLogado)
+           .update( dadosAtualizar );
+       snapshot = await db.collection("usuarios")
+           .doc( _idUsuarioLogado )
+           .get();
+
+
+
+     }else{
+       setState(() {
+
+       });
+     }
 
   }
   String _falta(int _obj, int _total){
@@ -943,6 +974,7 @@ class _ChercherFoodsState extends State<ChercherFoods> {
       return "Ainda faltam ${_obj-_total} calorias para a meta diária";
     }
   }
+  int _caloriasMomentaneas = 0;
   _alterarCalorias(int _inicial, int _final,int preco )async{
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseFirestore db = FirebaseFirestore.instance;
@@ -951,18 +983,27 @@ class _ChercherFoodsState extends State<ChercherFoods> {
     _idUsuarioLogado = usuarioLogado.uid;
     _data = DateTime.now().toString();
     initializeDateFormatting("pt_BR",null);
-    var formatador = DateFormat("d/MM/y");
+    var formatador = DateFormat("d/MM/yy");
     DateTime dataConvertida = DateTime.parse(_data);
     String dataormada = formatador.format(dataConvertida);
     _data = dataormada;
 
     _calorias = _calorias - _inicial*preco;
+    _caloriasMomentaneas = _caloriasMomentaneas - _inicial*preco;
     setState(() {
+      _caloriasMomentaneas = _caloriasMomentaneas + _final*preco;
       _calorias = _calorias + _final*preco;
     });
+    print("CALORIAS MOMENTANEAS");
+    print(_caloriasMomentaneas);
+    _listaCalorias[_listaCalorias.length-1] = _calorias;
+    print(_listaData[_listaData.length-1]);
+    _listaData[_listaData.length-1] = _data;
     Map<String, dynamic> dadosAtualizar = {
       "data" : _data,
-      "calorias": _calorias
+      "calorias": _calorias,
+      "listaCalorias" : _listaCalorias,
+      "listaData": _listaData
 
     };
     db.collection("usuarios")
@@ -979,84 +1020,21 @@ class _ChercherFoodsState extends State<ChercherFoods> {
   }
   _grafico()async{
 
-      FirebaseAuth auth = FirebaseAuth.instance;
-      FirebaseFirestore db = FirebaseFirestore.instance;
-      User usuarioLogado = await auth.currentUser!;
-      String _idUsuarioLogado;
 
-      _idUsuarioLogado = usuarioLogado.uid;
-      DocumentSnapshot snapshot = await db.collection("usuarios")
-          .doc( _idUsuarioLogado )
-          .get();
-      setState(() {
-        _calorias = 100;
-      });
-      int _subsCalorias = _calorias;
-      Map<String, dynamic>? dado = snapshot.data() as Map<String, dynamic>?;
-      setState(() {
-        _calorias = dado!["calorias"];
-        _dataUsuario = dado!["data"];
+      if(_listaData.isNotEmpty){
 
-
-      });
-      List<dynamic> Listacalorias = dado!["listaCalorias"];
-      List<dynamic> Listadata = dado!["listaData"];
-      if(Listadata.isNotEmpty){
-
-        for(int i = 0; i<Listadata.length; i++){
+        for(int i = 0; i<_listaData.length; i++){
 
             listaGrafico.add(CaloricSeries(
-              day: Listadata[i],
-              calories: Listacalorias[i],
+              day: _listaData[i],
+              calories: _listaCalorias[i],
               barColor: charts.ColorUtil.fromDartColor(Colors.blue),
             )
             );
         }
       }
 
-
-      setState(() {
-        _data = DateTime.now().toString();
-        initializeDateFormatting("pt_BR",null);
-        var formatador = DateFormat("d/MM/y");
-        DateTime dataConvertida = DateTime.parse(_data);
-        String dataormada = formatador.format(dataConvertida);
-        _data = dataormada;
-      });
-      if(_data!=dado!["data"]){
-        if(listaGrafico.length>=6){
-          Listadata.remove(Listadata[0]);
-          Listacalorias.remove(Listacalorias[0]);
-
-        }
-        Listadata.add(_data);
-        Listacalorias.add(_subsCalorias);
-        Map<String, dynamic> dadosAtualizar = {
-          "data" : _data,
-          "calorias": 0,
-          "listaData": Listadata,
-          "listaCalorias": Listacalorias
-
-        };
-        db.collection("usuarios")
-            .doc(_idUsuarioLogado)
-            .update( dadosAtualizar );
-        snapshot = await db.collection("usuarios")
-            .doc( _idUsuarioLogado )
-            .get();
-
-        setState(() {
-          _calorias = 0;
-          _dataUsuario = _data;
-
-
-        });
-
-      }else{
-        setState(() {
-
-        });
-      }}
+}
 
 
 
@@ -1084,13 +1062,17 @@ class _ChercherFoodsState extends State<ChercherFoods> {
           context: context,
           builder: (context){
             return AlertDialog(
+
               title: Text("Histórico"),
               content: Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.max,
+
+
                 children: <Widget>[
+                  Padding(padding: EdgeInsets.only(left: 500)),
 
                   Text("Seu histórico é atualizado a cada dia:"),
-                  SubscriberChart(data: listaGrafico)
+                  SubscriberChart(data: listaGrafico, )
 
 
 
@@ -1147,20 +1129,18 @@ class _ChercherFoodsState extends State<ChercherFoods> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(padding:EdgeInsets.only(top: 5, left: 12),
-              child: Text("Bem vindo!", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
-              ),),
-            Padding(padding:EdgeInsets.only(top: 5, left: 12, bottom: 20),
-              child: Text("Aqui você pode adicionar metas e acompanhar suas calorias diárias", style: TextStyle(fontSize: 16, color: Colors.blue),
+
+            Padding(padding:EdgeInsets.only(top: 5, left: 12, bottom: 12),
+              child: Text("Aqui você pode adicionar metas e acompanhar suas calorias diárias", style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
               ),),
 
 
                 Padding(padding:EdgeInsets.only(top: 5, left: 12),
-                  child: Text("Pontos de caloria totais hoje: (1 ponto equivale a 3,6 calorias)", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),
+                  child: Text("Pontos de caloria totais hoje: $_calorias", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),
                   ),),
-                Padding(padding:EdgeInsets.only(bottom: 5, left: 12),
-                  child: Text("$_calorias", style: TextStyle( fontSize: 18),
-                  ),),
+            Padding(padding:EdgeInsets.only(top: 2, left: 12, bottom: 10),
+              child: Text("(1 ponto equivale a 3,6 calorias)", style: TextStyle(fontSize: 12),
+              ),),
 
 
               Padding(padding:EdgeInsets.only(top: 8, left: 12, bottom: 3),
@@ -1193,7 +1173,7 @@ class _ChercherFoodsState extends State<ChercherFoods> {
 
 
             Padding(padding:EdgeInsets.only(bottom: 7, left: 12, top: 3),
-              child: Text(_falta(_meta, _calorias), style: TextStyle(fontSize: 10),
+              child: Text(_falta(_meta, _calorias), style: TextStyle(fontSize: 14),
               ),),
             Padding(padding:EdgeInsets.only(top: 5, left: 12),
               child: Text("Filtrar alimentos:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -1284,10 +1264,9 @@ class _ChercherFoodsState extends State<ChercherFoods> {
                                     child: Card(
                                         color: Colors.white,
                                         child: Padding(
-                                          padding: EdgeInsets.all(12),
+                                          padding: EdgeInsets.fromLTRB(12, 12, 12, 30),
                                           child:
                                           Column(
-
                                             children: [
                                               Padding(padding: EdgeInsets.only(left: 32, right: 32, ), child:
                                               Text(
@@ -1405,6 +1384,7 @@ class _ChercherFoodsState extends State<ChercherFoods> {
                   child: Container(
 
                     width: 300,
+
                     child: Text(
                       "Exibir Histórico",
                       style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),

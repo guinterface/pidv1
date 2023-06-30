@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pidv1/DoctorRoute/ChercherDoof/PainelPaciente.dart';
-import 'package:pidv1/UserRoute/Chercher/DadosUsuario/BloodPressure.dart';
-import 'package:pidv1/UserRoute/Chercher/DadosUsuario/MeusDados.dart';
-import 'package:pidv1/UserRoute/Chercher/DadosUsuario/UploadDeDocumentos.dart';
+
 import 'package:pidv1/UserRoute/Chercher/Diario/ChercherDiary.dart';
-import 'package:pidv1/UserRoute/Chercher/Medicine/Reminder.dart';
-import 'Notas.dart';
-import 'PainelSecundario.dart';
 import 'Vido.dart';
 
 class ChercherMain extends StatefulWidget {
@@ -23,7 +17,6 @@ class _ChercherMainState extends State<ChercherMain> {
   Widget build(BuildContext context) {
     List<Widget> telas = [
       Vido(),
-      PainelSecundario(),
       ChercherDiary(),
 
     ];
@@ -45,10 +38,7 @@ class _ChercherMainState extends State<ChercherMain> {
                 label: "Perfil",
                 icon: Icon(Icons.person_pin_rounded)
             ),
-            BottomNavigationBarItem(
-                label: "Consultas",
-                icon: Icon(Icons.home)
-            ),
+
             BottomNavigationBarItem(
                 label: "Diário",
                 icon: Icon(Icons.today

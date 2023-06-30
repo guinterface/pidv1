@@ -9,8 +9,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file/open_file.dart';
-import 'package:pidv1/Classes/Avalia%C3%A7%C3%A3o.dart';
 import 'package:pidv1/Classes/Documento.dart';
 import 'package:url_launcher/url_launcher.dart';
 class PastaDoc extends StatefulWidget {

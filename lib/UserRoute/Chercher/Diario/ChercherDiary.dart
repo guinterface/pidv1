@@ -1,14 +1,10 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pidv1/UserRoute/Chercher/Diario/ChercherFoods.dart';
 import 'package:pidv1/UserRoute/Chercher/Medicine/Reminder.dart';
-import 'dart:io';
-
 import 'package:pidv1/UserRoute/Chercher/Notas.dart';
 
 class ChercherDiary extends StatefulWidget {
@@ -19,10 +15,7 @@ class ChercherDiary extends StatefulWidget {
 class _ChercherDiaryState extends State<ChercherDiary> {
 
   TextEditingController _controllerNome = TextEditingController();
-  TextEditingController _controllerDes = TextEditingController();
-  File? _imagem;
   String _idUsuarioLogado = "";
-  bool _subindoImagem = false;
   String _urlImagemRecuperada = "";
   Color color = Colors.blue;
   Color backColor = Colors.yellow;
@@ -32,22 +25,6 @@ class _ChercherDiaryState extends State<ChercherDiary> {
 
 
 
-  _atualizarNomeFirestore(){
-
-    String nome = _controllerNome.text;
-    String des  = _controllerDes.text;
-    FirebaseFirestore db = FirebaseFirestore.instance;
-
-    Map<String, dynamic> dadosAtualizar = {
-      "nome" : nome,
-      "descricao" : des
-    };
-
-    db.collection("usuarios")
-        .doc(_idUsuarioLogado)
-        .update( dadosAtualizar );
-
-  }
 
 
 
@@ -101,13 +78,48 @@ class _ChercherDiaryState extends State<ChercherDiary> {
                 Padding(padding:EdgeInsets.only(bottom: 16, left: 12),
                   child: Text("dados de sua rotina", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                   ),),
-                 Image.asset("bck1/oi.png"),
-               Row(children: [
+                 Image.asset("bck1/oi.png", height: 120,),
+
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+
+                  Padding(padding:
+                  EdgeInsets.all(6),
+                    child: MaterialButton(height: 80,minWidth: 300,
+                      padding: EdgeInsets.all(20),
+                      color: color,
+                      onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => ChercherFoods()
+                        ));
+                      },
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.food_bank_sharp, color: backColor),
+                          SizedBox(width: 20,),
+                          Text("Pontos de Caloria", style: TextStyle(color: backColor),),
+                        ],
+                      ),
+                    ),
+                  ),
+
+
+
+                ],
+                ),
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.center,
+                 children: [
 
                  Padding(padding:
                  EdgeInsets.all(6),
-                   child: MaterialButton(height: 120,minWidth: 170,
-                     padding: EdgeInsets.all(20),
+                   child: MaterialButton(height: 80,minWidth: 150,
+                     padding: EdgeInsets.all(15),
                      color: backColor,
                      onPressed: (){
                        Navigator.push(context, MaterialPageRoute(
@@ -118,16 +130,16 @@ class _ChercherDiaryState extends State<ChercherDiary> {
                      child: Row(
                        children: [
                          Icon(Icons.medication, color: color),
-                         SizedBox(width: 20,),
-                         Text("Meus Remédios", style: TextStyle(color: color),),
+                         SizedBox(width: 10,),
+                         Text("Remédios", style: TextStyle(color: color),),
                        ],
                      ),
                    ),
                  ),
                  Padding(padding:
                  EdgeInsets.all(6),
-                   child: MaterialButton(height: 120,minWidth: 170,
-                     padding: EdgeInsets.all(20),
+                   child: MaterialButton(height: 80,minWidth: 150,
+                     padding: EdgeInsets.all(15),
                      color: backColor,
                      onPressed: (){
                      Navigator.push(context, MaterialPageRoute(
@@ -137,8 +149,8 @@ class _ChercherDiaryState extends State<ChercherDiary> {
                      child: Row(
                        children: [
                          Icon(Icons.person_pin, color: color,),
-                         SizedBox(width: 20,),
-                         Text("Eu, paciente", style: TextStyle(color: color),),
+                         SizedBox(width: 10,),
+                         Text("Anotações", style: TextStyle(color: color),),
                        ],
                      ),
                    ),
@@ -147,34 +159,8 @@ class _ChercherDiaryState extends State<ChercherDiary> {
 
                ], )
                ,
-                Row(children: [
-
-                  Padding(padding:
-                  EdgeInsets.all(6),
-                    child: MaterialButton(height: 120,minWidth: 170,
-                      padding: EdgeInsets.all(20),
-                      color: backColor,
-                      onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => ChercherFoods()
-                        ));
-                      },
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.food_bank_sharp, color: color),
-                          SizedBox(width: 20,),
-                          Text("Pontos de Caloria", style: TextStyle(color: color),),
-                        ],
-                      ),
-                    ),
-                  ),
 
 
-
-                ], )
-                ,
 
 
 

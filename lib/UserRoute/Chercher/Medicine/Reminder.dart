@@ -1,15 +1,9 @@
 import 'dart:async';
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
-import 'package:pidv1/Classes/Avalia%C3%A7%C3%A3o.dart';
 import 'package:pidv1/Classes/Medicine.dart';
 class Reminder extends StatefulWidget {
   const Reminder({Key? key}) : super(key: key);

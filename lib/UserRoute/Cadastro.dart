@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pidv1/Classes/Usuario.dart';
-import 'package:pidv1/DoctorRoute/LoginDoctor.dart';
-import 'package:pidv1/UserRoute/Chercher/Diario/ChercherFoods.dart';
 import 'Chercher/ChercherMain.dart';
 
 
@@ -183,27 +181,7 @@ class _CadastroState extends State<Cadastro> {
                       }
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 16, bottom: 10),
-                  child: MaterialButton(
-                      child: Text(
-                        "Sou Doutor",
-                        style: TextStyle(color: Colors.teal, fontSize: 20),
-                      ),
-                      color: Colors.yellow,
-                      padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32)),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => TesteDoutor()
-                            )
-                        );
-                      }
-                  ),
-                ),
+
                 Center(
                   child: Text(
                     _mensagemErro,

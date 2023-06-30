@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+2
+version: 1.0.0+7
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -28,38 +28,23 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  charts_flutter: ^0.10.0
-  get: ^3.20.1
-  open_file: ^3.2.1
-  file_support: ^1.0.3+2
-  file_picker: ^4.1.4
-  firebase_storage: ^10.0.3
-  image_picker: ^0.8.4
-  #google_maps_flutter: ^0.5.20+1
-  intl: ^0.17.0
-  brasil_fields: ^0.0.8
-  validadores: ^0.0.1
-  carousel_pro: ^1.0.0
-  firebase_core: ^1.6.0
-  firebase_auth: ^3.1.1
-  cloud_firestore: ^2.5.3
-  url_launcher: ^5.0.5
-  #shared_preferences: ^0.4.0
-  sqflite: ^1.1.5
-  flutter_gradient_colors: ^1.0.0
-  uuid: ^3.0.4
-  pin_code_fields: ^3.0.0
-  flutter_polyline_points: ^0.2.4
-  jitsi_meet: ^4.0.0
-  camera: ^0.9.2
-  wakelock: ^0.1.4+1
-  #flashlight: ^0.1.1
-  scoped_model: ^1.1.0
+  firebase_core: ^2.10.0
+  firebase_auth: ^4.4.2
+  cloud_firestore: ^4.5.2
+  get: ^4.6.5
+  charts_flutter_new: ^0.12.0
+  firebase_storage: ^11.1.1
+  image_picker: ^0.8.7+3
+  file_picker: ^5.2.9
+  file_support: ^1.0.7
+  url_launcher: ^6.1.10
+  camera: ^0.10.4
+  wakelock: ^0.6.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.9.0
+  flutter_launcher_icons: ^0.13.0
 
 flutter_icons:
   android: true

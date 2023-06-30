@@ -3,9 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pidv1/Classes/FirebaseUser.dart';
 import 'package:pidv1/Classes/Usuario.dart';
-import 'package:pidv1/DoctorRoute/ChercherDoof/Dino.dart';
-import 'package:pidv1/UserRoute/Chercher/Diario/ChercherFoods.dart';
-
 import 'Cadastro.dart';
 import 'Chercher/ChercherMain.dart';
 
@@ -24,11 +21,7 @@ class _InicioState extends State<Inicio> {
     Usuario usuario = await UsuarioFirebase.getDadosUsuarioLogado();
     if(usuario!=null){
       if(usuario.tipoUsuario == "doutor"){
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ChercherDino()),
 
-        );
 
       }else{
         Navigator.pushReplacement(
@@ -81,7 +74,8 @@ class _InicioState extends State<Inicio> {
         mensagemErro = " Algo deu errado, tente novamente! ";
       });
 
-    })
+    }
+    )
     ;
 
 

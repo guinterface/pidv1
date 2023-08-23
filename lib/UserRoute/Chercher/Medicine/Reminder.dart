@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:pidv1/Classes/Medicine.dart';
 class Reminder extends StatefulWidget {
   const Reminder({Key? key}) : super(key: key);
@@ -16,6 +18,7 @@ class _ReminderState extends State<Reminder> {
   TextEditingController _tituloController = TextEditingController();
   TextEditingController _descricaoController = TextEditingController();
   TextEditingController _horarioController = TextEditingController();
+  List<String> selectedDays = [];
   final _controler  = StreamController<QuerySnapshot>.broadcast();
   String _escolhaUsuario = "P";
   FirebaseFirestore db = FirebaseFirestore.instance;
@@ -35,11 +38,11 @@ class _ReminderState extends State<Reminder> {
 
 String _imagemBotao(String categ)  {
     if(categ =="P"){
-      return "bck1/MedicinePill.png";
+      return "bck1/MedicineLiquid.png";
     }else if(categ == "I"){
       return "bck1/MedicineVaccine.png";
     }else{
-      return "bck1/MedicineLiquid.png";
+      return "bck1/MedicinePill.png";
     }
 }
 _removerAnuncio(String _idDoc)async{
@@ -84,9 +87,10 @@ _removerAnuncio(String _idDoc)async{
                     autofocus: true,
                     decoration: InputDecoration(
                         labelText: "Título",
-                        hintText: "Exemplo: Tosse Seca"
+                        hintText: "Exemplo: Remédio 1"
                     ),
                   ),
+                  /*
                   Text("Categoria:"),
 
 
@@ -117,21 +121,45 @@ _removerAnuncio(String _idDoc)async{
                           });
                           (context as Element).reassemble();
                         } ),
+                  */
 
-                  TextField(
-                    controller: _descricaoController,
-                    decoration: InputDecoration(
-                        labelText: "Dias da semana:",
-                        hintText: "Exemplo: Segunda a quinta"
-                    ),
+                  MultiSelectDialogField(
+                    items: [
+                      MultiSelectItem("Segunda", "Segunda"),
+                      MultiSelectItem("Terça", "Terça"),
+                      MultiSelectItem("Quarta", "Quarta"),
+                      MultiSelectItem("Quinta", "Quinta"),
+                      MultiSelectItem("Sexta", "Sexta"),
+                      MultiSelectItem("Sábado", "Sábado"),
+                      MultiSelectItem("Domingo", "Domingo"),
+
+
+                      // Add other days of the week
+                    ],
+                    title: Text("Dias da semana:"),
+                    buttonText: Text("Dias da Semana"),
+                    onConfirm: (values) {
+                      setState(() {
+                        List<String> selectedStringValues = values.cast<String>();
+                        selectedDays = selectedStringValues;
+
+                      });
+                    },
                   ),
-                  TextField(
+                  SizedBox(height: 80, width: 50,
+                    child: DateTimePicker(
+                      type: DateTimePickerType.time,
+                      initialValue: "12:00",
+                      timeLabelText: "Hora",
+                      onChanged: (val) => _horarioController.text = val,
+                    ), ),
+                  /*TextField(
                     controller: _horarioController,
                     decoration: InputDecoration(
                         labelText: "Horário:",
                         hintText: "Exemplo: 18h"
                     ),
-                  )
+                  )*/
                 ],
               ),
               actions: <Widget>[
@@ -151,9 +179,9 @@ _removerAnuncio(String _idDoc)async{
 
                       medicine.titulo = _tituloController.text;
                       medicine.idUsuario = _idUsuarioLogado;
-                      medicine.horario = _horarioController.text;
-                      medicine.diasdaSemana = _descricaoController.text;
-                      medicine.categoria = _escolhaUsuario;
+                      medicine.horario = [_horarioController.text];
+                      medicine.diasdaSemana = selectedDays;
+                      //medicine.categoria = _escolhaUsuario;
                       medicine.identidade = DateTime.now().toString();
                       db.collection("medicines")
                           .doc( _idUsuarioLogado )
@@ -209,13 +237,19 @@ _removerAnuncio(String _idDoc)async{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(padding:EdgeInsets.only(top: 10, left: 12),
-              child: Text("Quais medicamentos você", style: TextStyle(fontSize: 22),
+              child: Text("Quais medicamentos você", style: TextStyle(fontSize: 18),
               ),),
             Padding(padding:EdgeInsets.only(bottom: 16, left: 12),
-              child: Text("utiliza atualmente?", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              child: Text("utiliza atualmente?", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),),
             Padding(padding: EdgeInsets.all(12),
-              child: Image.asset("bck1/mdc.png"),),
+
+              child:
+              AspectRatio(
+                aspectRatio: 15 / 9, // Adjust the aspect ratio as needed
+                child: Image.asset("bck1/mdc.png")
+              )),
+
             Flexible(child:StreamBuilder<QuerySnapshot>
 
               (stream: _controler.stream, builder:(context, snapshot){
@@ -251,11 +285,11 @@ _removerAnuncio(String _idDoc)async{
 
                       return
                         SizedBox(
-                          height: 160,
+                          height: 330,
 
                           child: ListView.separated(
                             itemCount: querySnapshot.docs.length,
-                            scrollDirection: Axis.vertical,
+                            scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.all(24),
 
                             primary: false,
@@ -266,8 +300,8 @@ _removerAnuncio(String _idDoc)async{
                               DocumentSnapshot item = requisicoes[indice];
                               String titulo = item["titulo"];
                               String descricao = item["descricao"];
-                              String horario = item["horario"];
-                              String dia = item["diasdaSemana"];
+                              String horario = "${item["horario"].join(', ')}";
+                              String dia = "${item["diasdaSemana"].join(', ')}";
                               String categoria = item["categoria"];
                               String deltar = item["identidade"];
 
@@ -297,21 +331,26 @@ _removerAnuncio(String _idDoc)async{
                                                Row(
                                                  children: [
                                                    Padding(padding: EdgeInsets.all(12),
-                                                     child: Image.asset(_imagemBotao(categoria), height: 64,),
+                                                     child: Image.asset(_imagemBotao(categoria), height: 36,),
 
                                                    ),
                                                    Column(
+                                                     crossAxisAlignment: CrossAxisAlignment.center,
                                                      children: [
 
                                                        Padding(padding: EdgeInsets.only(left: 32, right: 32, ), child:
-                                                       Text(
-                                                         "Dias da Semana: $dia",
-                                                         style: TextStyle(
-                                                             fontSize: 12,
-                                                             fontWeight: FontWeight.bold,
-                                                             color: Colors.white
-                                                         ),
-                                                       )
+                                                           Container(width: 100, child:
+                                                           Text(
+                                                             "$dia",
+                                                             softWrap: true,
+                                                             style: TextStyle(
+                                                                 fontSize: 12,
+                                                                 fontWeight: FontWeight.bold,
+                                                                 color: Colors.white
+                                                             ),
+                                                           )
+                                                             ,)
+
 
                                                          ,),
                                                        Padding(padding: EdgeInsets.only(left: 32, right: 32, ), child:
@@ -371,9 +410,13 @@ _removerAnuncio(String _idDoc)async{
 
 
 
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-            children: [GestureDetector(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+
+              GestureDetector(
                        onTap: _exibirTela,
               child: Container(
 

@@ -40,7 +40,7 @@ class _ChercherMainState extends State<ChercherMain> {
             ),
 
             BottomNavigationBarItem(
-                label: "Diário",
+                label: "Saúde Diária",
                 icon: Icon(Icons.today
                 )),
 

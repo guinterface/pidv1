@@ -120,7 +120,7 @@ void _achaIMC(){
      _doencas.text = dados['doencas'];
    });
 
-
+    _achaIMC();
 
 
 
@@ -141,7 +141,7 @@ TextEditingController dataatual = TextEditingController();
   void initState() {
     super.initState();
     _recuperarDadosUsuario();
-    _achaIMC();
+
 
 
 

@@ -28,7 +28,7 @@ class _NotasState extends State<Notas> {
     final stream = db.collection("notas")
         .doc(usuarioLogado.uid)
         .collection("minhas_notas")
-    .orderBy("data", descending: false)
+    .orderBy("data", descending: true)
         .snapshots();
     stream.listen((dados){_controler.add(dados);});
 
@@ -292,13 +292,17 @@ class _NotasState extends State<Notas> {
              */
 
             Padding(padding:EdgeInsets.only(top: 10, left: 12),
-              child: Text("Escreva aqui o que aconteceu", style: TextStyle(fontSize: 22),
+              child: Text("Escreva aqui o que aconteceu", style: TextStyle(fontSize: 18),
               ),),
             Padding(padding:EdgeInsets.only(bottom: 16, left: 12),
-              child: Text("na sua saúde hoje", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              child: Text("na sua saúde hoje", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),),
             Padding(padding: EdgeInsets.all(12),
-              child: Image.asset("bck1/nonk.png"),),
+                child: AspectRatio(
+                    aspectRatio: 18 / 9, // Adjust the aspect ratio as needed
+                    child: Image.asset("bck1/nonk.png")
+                )),
+
             Flexible(child:StreamBuilder<QuerySnapshot>
 
               (stream: _controler.stream, builder:(context, snapshot){
@@ -414,15 +418,18 @@ class _NotasState extends State<Notas> {
 
 
 
-            Row(),
-            Padding(padding: EdgeInsets.only(left: 180, top: 32), child:  FloatingActionButton(
-              onPressed: _exibirTelaCadastro,
-              backgroundColor: Colors.blueAccent,
-              foregroundColor: Colors.white,
-              child: Icon( Icons.add),),),
-            Padding(padding:EdgeInsets.only(top: 10, left: 80),
-              child: Text("Clique aqui para criar uma anotação", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent),
-              ),),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(padding: EdgeInsets.only(top: 32), child:  FloatingActionButton(
+                  onPressed: _exibirTelaCadastro,
+                  backgroundColor: Colors.blueAccent,
+                  foregroundColor: Colors.white,
+                  child: Icon( Icons.add),),),
+              ],
+            ),
+
+
 
 
 

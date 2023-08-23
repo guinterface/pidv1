@@ -16,6 +16,7 @@ class Usuario {
   String _data = "";
   List<String>_listaDatas = [""];
   List<int>_listaCalorias = [0];
+  String _metaCalorias = "" ;
 
 
 
@@ -40,6 +41,7 @@ class Usuario {
       "data": this.data,
       "listaCalorias": this.listaCalorias,
       "listaData": this.listaDatas,
+      "metaCalorias": this.metaCalorias,
 
 
 
@@ -60,6 +62,12 @@ class Usuario {
 
   set tipoUsuario(String value) {
     _tipoUsuario = value;
+  }
+
+  String get metaCalorias => _metaCalorias;
+
+  set metaCalorias(String value) {
+    _metaCalorias = value;
   }
 
   String get idUsuario => _idUsuario;

@@ -73,10 +73,10 @@ class _ChercherDiaryState extends State<ChercherDiary> {
               children: <Widget>[
 
                 Padding(padding:EdgeInsets.only(top: 10, left: 12),
-                  child: Text("Aqui estão os", style: TextStyle(fontSize: 22),
+                  child: Text("Aqui estão os dados da", style: TextStyle(fontSize: 22),
                   ),),
                 Padding(padding:EdgeInsets.only(bottom: 16, left: 12),
-                  child: Text("dados de sua rotina", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  child: Text(" sua saúde diária", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                   ),),
                  Image.asset("bck1/oi.png", height: 120,),
 

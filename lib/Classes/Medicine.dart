@@ -5,8 +5,8 @@ class Medicine{
 
   String _idUsuario = "";
   String _titulo = "";
-  String _diasdaSemana = "";
-  String _horario = "";
+  List<String> _diasdaSemana = [];
+  List<String> _horario = [];
   String _categoria = "";
   String _descricao = "";
   String _identidade = "";
@@ -34,9 +34,9 @@ class Medicine{
   }
 
 
-  String get diasdaSemana => _diasdaSemana;
+  List<String> get diasdaSemana => _diasdaSemana;
 
-  set diasdaSemana(String value) {
+  set diasdaSemana(List<String> value) {
     _diasdaSemana = value;
   }
 
@@ -58,9 +58,9 @@ class Medicine{
     _descricao = value;
   }
 
-  String get horario => _horario;
+  List<String> get horario => _horario;
 
-  set horario(String value) {
+  set horario(List<String> value) {
     _horario = value;
   }
 

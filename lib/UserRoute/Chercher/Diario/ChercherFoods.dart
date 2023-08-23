@@ -889,6 +889,8 @@ class _ChercherFoodsState extends State<ChercherFoods> {
         _dataUsuario = dados!["data"];
         print(dados!["nome"]);
         print(dados["data"]);
+        _meta = dados["metaCalorias"];
+        _controllerDes.text = "$_meta";
 
       });
       print("ACHAMOS A DATA");
@@ -1011,7 +1013,31 @@ class _ChercherFoodsState extends State<ChercherFoods> {
         .update( dadosAtualizar );
     _adicionarListenerRequisicoes();
   }
+  _alterarMetaCalorias(int _metaCalorias)async{
+    FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    User usuarioLogado = await auth.currentUser!;
+    String _idUsuarioLogado;
+    _idUsuarioLogado = usuarioLogado.uid;
 
+
+
+
+    Map<String, dynamic> dadosAtualizar = {
+      "metaCalorias" : _metaCalorias,
+
+
+    };
+
+    db.collection("usuarios")
+        .doc(_idUsuarioLogado)
+        .update( dadosAtualizar );
+
+    setState(() {
+      _meta = _metaCalorias;
+
+    });
+  }
   _introduzirComidas(){
     for(int i = 0; i<_alimentacios.length; i++){
       _foodController.addFood(_alimentacios[i]);
@@ -1154,9 +1180,7 @@ class _ChercherFoodsState extends State<ChercherFoods> {
                   keyboardType: TextInputType.number,
                   style: TextStyle(fontSize: 16),
                   onChanged: (texto){
-                    setState(() {
-                      _meta = int.parse(texto);
-                    });
+                    _alterarMetaCalorias(int.parse(texto));
                   },
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(32, 8, 8, 16),
